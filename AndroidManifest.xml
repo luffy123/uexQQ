@@ -42,6 +42,10 @@
                 <data android:scheme="tencent222222" />
             </intent-filter>
         </activity>
+        <activity android:name="org.zywx.wbpalmstar.plugin.uexqq.QQTransitActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:launchMode="singleTask">
+        </activity>
 
         <!-- 可以改动区域 -->
 

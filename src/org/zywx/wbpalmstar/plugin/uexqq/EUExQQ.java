@@ -15,12 +15,14 @@ import org.zywx.wbpalmstar.engine.universalex.EUExCallback;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tencent.connect.UserInfo;
 import com.tencent.connect.common.Constants;
 import com.tencent.connect.share.QQShare;
 import com.tencent.connect.share.QzoneShare;
@@ -33,10 +35,12 @@ public class EUExQQ extends EUExBase {
     private Context mContext;
     private PackageManager pm;
     public static Tencent mTencent;
+    public static EUExQQ mIntance;
     public static String mAppid = "222222";
     private static final String CB_LOGIN = "uexQQ.cbLogin";
     public static final String CB_INSTALLIED = "uexQQ.cbIsQQInstalled";
     private static final String CB_SHARE_QQ = "uexQQ.cbShareQQ";
+    private static final String CB_USER_INFO_QQ = "uexQQ.cbGetUserInfo";
     private static final String TAG_RET = "ret";
     private static final String TAG_DATA = "data";
 
@@ -48,6 +52,7 @@ public class EUExQQ extends EUExBase {
 
     @Override
     protected boolean clean() {
+    	Log.i(TAG, "clean");
         return false;
     }
 
@@ -58,7 +63,8 @@ public class EUExQQ extends EUExBase {
         mAppid = params[0];
         Log.i(TAG, "login->mAppid = " + mAppid);
         initTencent(mAppid);
-        mTencent.login((Activity )mContext, "all", loginListener);
+        //mTencent.login((Activity )mContext, "all", loginListener);
+        doToStartTransitActivity(QQTransitActivity.UEX_QQ_TRANSIT_ACTIVITY_LOGIN, null);
     }
 
     private void initTencent(String appId){
@@ -150,7 +156,7 @@ public class EUExQQ extends EUExBase {
             JSONObject dataJson = new JSONObject();
             dataJson.put(Constants.PARAM_ACCESS_TOKEN, token);
             dataJson.put(Constants.PARAM_OPEN_ID, openId);
-            //dataJson.put(Constants.PARAM_EXPIRES_IN, expires);
+            dataJson.put(Constants.PARAM_EXPIRES_IN, expires);
             loginCallBack(EUExCallback.F_C_SUCCESS, dataJson);
         } catch(Exception e) {
             loginCallBack(EUExCallback.F_C_FAILED, e.getMessage());
@@ -240,7 +246,8 @@ public class EUExQQ extends EUExBase {
 	}
 
     private void doToQQShare(Bundle params) {
-        mTencent.shareToQQ((Activity)mContext, params, qqShareListener);
+        //mTencent.shareToQQ((Activity)mContext, params, qqShareListener);
+    	doToStartTransitActivity(QQTransitActivity.UEX_QQ_TRANSIT_ACTIVITY_SHARE_TO_QQ, params);
     }
 
     public void shareLocalImgToQQ(String[] params){
@@ -417,6 +424,37 @@ public class EUExQQ extends EUExBase {
     }
 
     private void doToQZoneShare(Bundle params) {
-        mTencent.shareToQzone((Activity)mContext, params, qqShareListener);
+        //mTencent.shareToQzone((Activity)mContext, params, qqShareListener);
+    	doToStartTransitActivity(QQTransitActivity.UEX_QQ_TRANSIT_ACTIVITY_SHARE_TO_QZONE, params);
+    }
+    
+	public void getUserInfo(String[] param) {
+		if (param.length < 1) {
+			return;
+		}
+		String appId = param[0];
+		initTencent(appId);
+		UserInfo mInfo = new UserInfo(mContext, mTencent.getQQToken());
+		mInfo.getUserInfo(new BaseUiListener() {
+			@Override
+			protected void doComplete(JSONObject values) {
+				// json 类型回调
+				String js = SCRIPT_HEADER + "if(" + CB_USER_INFO_QQ + "){"
+						+ CB_USER_INFO_QQ + "(" + 0 + ","
+						+ EUExCallback.F_C_JSON + "," + values.toString()
+						+ ");}";
+				Log.i(TAG, "cbGetUserInfo :" + js);
+				onCallback(js);
+			}
+		});
+	}
+    //SDK升级,需要onActivityResult接收回调数据
+    private void doToStartTransitActivity(int event,Bundle params){
+    	Intent intent = new Intent(mContext,QQTransitActivity.class);
+    	//intent.putExtra(QQTransitActivity.UEX_QQ_TRANSIT_ACTIVITY_KEY_INTANCE, this);
+    	mIntance = this;
+    	intent.putExtra(QQTransitActivity.UEX_QQ_TRANSIT_ACTIVITY_KEY_EVENT, event);
+    	intent.putExtra(QQTransitActivity.UEX_QQ_TRANSIT_ACTIVITY_KEY_PARAMS, params);
+    	startActivity(intent);
     }
 }

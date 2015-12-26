@@ -29,5 +29,10 @@
                 <data android:scheme="$UEXQQ_APPID$" />
             </intent-filter>
         </activity>
+    <activity
+        android:name="org.zywx.wbpalmstar.plugin.uexqq.QQTransitActivity"
+        android:launchMode="singleTask"
+        android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+    </activity>
 
 </manifest>

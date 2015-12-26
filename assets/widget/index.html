@@ -13,6 +13,9 @@
 	var appId = "222222";
 	
 	window.uexOnload = function(){
+        uexQQ.cbGetUserInfo = function(opId,dataType,data) {
+        	alert("cbGetUserInfo:" + JSON.stringify(data));
+        }
         uexQQ.cbLogin = function(opId, dataType, data){
             document.getElementById("login").innerHTML = data;
         }
@@ -52,6 +55,9 @@
           var json = '{"title":"空间分享标题","summary":"空间分享消息摘要","targetUrl":"http://appcan.cn","imageUrl":["res://aa.png", "res://aa.jpg", "res://bb.png"]}';
           uexQQ.shareImgTextToQZone(appId, json);
       }
+       function getUserInfo(){
+          uexQQ.getUserInfo(appId);
+      }
       
 </script>
 </head>
@@ -75,6 +81,7 @@
             <input class="btn" type="button" value="音乐分享" onclick="shareAudioToQQ()">
             <input class="btn" type="button" value="应用分享" onclick="shareAppToQQ()">
             <input class="btn" type="button" value="图文分享到空间" onclick="shareImgTextToQZone()">
+            <input class="btn" type="button" value="获取用户信息" onclick="getUserInfo()">
 		</div>
 	</div>	
 </body>

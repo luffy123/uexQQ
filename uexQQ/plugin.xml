@@ -10,5 +10,6 @@
         <method name="shareImgTextToQZone" />
         <method name="sendTextWeibo" />
         <method name="isQQInstalled"/>
+        <method name="getUserInfo"/>
     </plugin>
 </uexplugins>
