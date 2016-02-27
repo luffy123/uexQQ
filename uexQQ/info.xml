@@ -1,4 +1,4 @@
-﻿﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <uexplugins>
     <plugin uexName="uexQQ" version="3.0.7" build = "7">
         <info>7:更新sdk,修正部分回调bug,(1,2)修正打开增量开关后,图片获取不到的问题,增加getUserInfo接口</info>
