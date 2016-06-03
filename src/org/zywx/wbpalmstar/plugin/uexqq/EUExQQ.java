@@ -13,7 +13,6 @@ import org.zywx.wbpalmstar.engine.EBrowserView;
 import org.zywx.wbpalmstar.engine.universalex.EUExBase;
 import org.zywx.wbpalmstar.engine.universalex.EUExCallback;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -41,6 +40,9 @@ public class EUExQQ extends EUExBase {
     public static final String CB_INSTALLIED = "uexQQ.cbIsQQInstalled";
     private static final String CB_SHARE_QQ = "uexQQ.cbShareQQ";
     private static final String CB_USER_INFO_QQ = "uexQQ.cbGetUserInfo";
+    private String loginFuncId;
+    private String shareQQFunId;
+    private String getUserInfoFunId;
     private static final String TAG_RET = "ret";
     private static final String TAG_DATA = "data";
 
@@ -57,10 +59,13 @@ public class EUExQQ extends EUExBase {
     }
 
     public void login(String[] params){
-        if(params.length < 0){
+        if(params.length < 1){
             return;
         }
         mAppid = params[0];
+        if (params.length == 2) {
+            loginFuncId = params[1];
+        }
         Log.i(TAG, "login->mAppid = " + mAppid);
         initTencent(mAppid);
         //mTencent.login((Activity )mContext, "all", loginListener);
@@ -120,6 +125,9 @@ public class EUExQQ extends EUExBase {
             JSONObject jsonObject=new JSONObject(result);
             jsCallbackAsyn(CB_SHARE_QQ, 0, EUExCallback.F_C_INT,
                     jsonObject.toString());
+            if (null != shareQQFunId) {
+                callbackToJs(Integer.parseInt(shareQQFunId), false, jsonObject);
+            }
         }
         @Override
         public void onComplete(Object response) {
@@ -130,6 +138,9 @@ public class EUExQQ extends EUExBase {
             Log.i(TAG, "qqShareListener->onComplete->response = " + response);
             jsCallbackAsyn(CB_SHARE_QQ, 0, EUExCallback.F_C_INT,
                     jsonObject.toString());
+            if (null != shareQQFunId) {
+                callbackToJs(Integer.parseInt(shareQQFunId), false, jsonObject);
+            }
         }
         @Override
         public void onError(UiError e) {
@@ -140,6 +151,9 @@ public class EUExQQ extends EUExBase {
             Log.i(TAG, "qqShareListener->onError = " + e.errorMessage);
             jsCallbackAsyn(CB_SHARE_QQ, 0, EUExCallback.F_C_INT,
                     jsonObject.toString());
+            if (null != shareQQFunId) {
+                callbackToJs(Integer.parseInt(shareQQFunId), false, jsonObject);
+            }
         }
     };
 
@@ -176,7 +190,7 @@ public class EUExQQ extends EUExBase {
 				isInstalled ? 0 : 1);
     	return isInstalled;
     }
-    
+
     public void loginCallBack(int ret, Object data) {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(TAG_RET, String.valueOf(ret));
@@ -184,6 +198,9 @@ public class EUExQQ extends EUExBase {
         JSONObject json = new JSONObject(map);
         jsCallbackAsyn(CB_LOGIN, 0, EUExCallback.F_C_JSON,
                 json.toString());
+        if (loginFuncId != null) {
+            callbackToJs(Integer.parseInt(loginFuncId), false, json);
+        }
     }
 
     public void shareWebImgTextToQQ(String[] params){
@@ -193,6 +210,9 @@ public class EUExQQ extends EUExBase {
         String appId = params[0];
         initTencent(appId);
         String jsonData = params[1];
+        if (params.length == 3) {
+            shareQQFunId = params[2];
+        }
         parseWebImgData(jsonData);
     }
 
@@ -427,12 +447,15 @@ public class EUExQQ extends EUExBase {
         //mTencent.shareToQzone((Activity)mContext, params, qqShareListener);
     	doToStartTransitActivity(QQTransitActivity.UEX_QQ_TRANSIT_ACTIVITY_SHARE_TO_QZONE, params);
     }
-    
+
 	public void getUserInfo(String[] param) {
 		if (param.length < 1) {
 			return;
 		}
 		String appId = param[0];
+        if (param.length == 2) {
+            getUserInfoFunId = param[1];
+        }
 		initTencent(appId);
 		UserInfo mInfo = new UserInfo(mContext, mTencent.getQQToken());
 		mInfo.getUserInfo(new BaseUiListener() {
@@ -445,6 +468,9 @@ public class EUExQQ extends EUExBase {
 						+ ");}";
 				Log.i(TAG, "cbGetUserInfo :" + js);
 				onCallback(js);
+                if (getUserInfoFunId != null) {
+                    callbackToJs(Integer.parseInt(getUserInfoFunId), false, values);
+                }
 			}
 		});
 	}
