@@ -11,22 +11,8 @@
 	var cJson = 1;
 	var cInt = 2;
 	var appId = "222222";
-
-	window.uexOnload = function(){
-        uexQQ.cbGetUserInfo = function(opId,dataType,data) {
-        	alert("cbGetUserInfo:" + JSON.stringify(data));
-        }
-        uexQQ.cbLogin = function(opId, dataType, data){
-            document.getElementById("login").innerHTML = data;
-        }
-        uexQQ.cbShareQQ = function(opId, dataType, data){
-            alert("cbShareQQ:" + data);
-        }
-        uexQQ.cbIsQQInstalled = function(opId,dataType,data) {
-        	alert("cbIsQQInstalled："+data);
-        }
-      }
       var commonCallback = function(data) {
+        console.log("data:" + JSON.stringify(data));
         alert("commonCallback:" + JSON.stringify(data));
       };
       function login(){
