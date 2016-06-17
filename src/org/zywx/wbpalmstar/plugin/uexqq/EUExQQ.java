@@ -277,6 +277,9 @@ public class EUExQQ extends EUExBase {
         String appId = params[0];
         initTencent(appId);
         String jsonData = params[1];
+        if (params.length == 3) {
+            shareQQFunId = params[2];
+        }
         parseLocalImgData(jsonData);
     }
 
@@ -316,6 +319,9 @@ public class EUExQQ extends EUExBase {
         String appId = params[0];
         initTencent(appId);
         String jsonData = params[1];
+        if (params.length == 3) {
+            shareQQFunId = params[2];
+        }
         parseAudioData(jsonData);
     }
 
@@ -365,6 +371,9 @@ public class EUExQQ extends EUExBase {
         String appId = params[0];
         initTencent(appId);
         String jsonData = params[1];
+        if (params.length == 3) {
+            shareQQFunId = params[2];
+        }
         parseAppData(jsonData);
     }
 
@@ -410,6 +419,9 @@ public class EUExQQ extends EUExBase {
         String appId = params[0];
         initTencent(appId);
         String jsonData = params[1];
+        if (params.length == 3) {
+            shareQQFunId = params[2];
+        }
         parseImgTextToQZoneData(jsonData);
     }
 
