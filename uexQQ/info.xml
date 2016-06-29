@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <uexplugins>
-    <plugin uexName="uexQQ" version="4.0.0" build = "8">
-        <info>8:支持function传入</info>
+    <plugin uexName="uexQQ" version="4.0.0" build = "9">
+        <info>9:更新sdk</info>
+        <build>8:支持function传入</build>
         <build>7:更新sdk,修正部分回调bug,(1,2)修正打开增量开关后,图片获取不到的问题,增加getUserInfo接口</build>
         <build>6:新增getUserInfo获取用户信息接口</build>
         <build>5:修复qq图文分享错误</build>
