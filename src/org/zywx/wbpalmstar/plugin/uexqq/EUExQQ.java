@@ -123,10 +123,11 @@ public class EUExQQ extends EUExBase {
             result.put("errCode",EUExCallback.F_C_FAILED);
             result.put("errStr","user cancel");
             JSONObject jsonObject=new JSONObject(result);
-            jsCallbackAsyn(CB_SHARE_QQ, 0, EUExCallback.F_C_INT,
-                    jsonObject.toString());
             if (null != shareQQFunId) {
-                callbackToJs(Integer.parseInt(shareQQFunId), false, jsonObject);
+                callbackToJs(Integer.parseInt(shareQQFunId), false, EUExCallback.F_C_FAILED, jsonObject);
+            } else {
+                jsCallbackAsyn(CB_SHARE_QQ, 0, EUExCallback.F_C_INT,
+                        jsonObject.toString());
             }
         }
         @Override
@@ -136,10 +137,12 @@ public class EUExQQ extends EUExBase {
             result.put("errStr",response);
             JSONObject jsonObject=new JSONObject(result);
             Log.i(TAG, "qqShareListener->onComplete->response = " + response);
-            jsCallbackAsyn(CB_SHARE_QQ, 0, EUExCallback.F_C_INT,
-                    jsonObject.toString());
+
             if (null != shareQQFunId) {
-                callbackToJs(Integer.parseInt(shareQQFunId), false, jsonObject);
+                callbackToJs(Integer.parseInt(shareQQFunId), false, EUExCallback.F_C_SUCCESS, jsonObject);
+            } else {
+                jsCallbackAsyn(CB_SHARE_QQ, 0, EUExCallback.F_C_INT,
+                        jsonObject.toString());
             }
         }
         @Override
@@ -149,10 +152,12 @@ public class EUExQQ extends EUExBase {
             result.put("errStr",e.errorMessage);
             JSONObject jsonObject=new JSONObject(result);
             Log.i(TAG, "qqShareListener->onError = " + e.errorMessage);
-            jsCallbackAsyn(CB_SHARE_QQ, 0, EUExCallback.F_C_INT,
-                    jsonObject.toString());
+
             if (null != shareQQFunId) {
-                callbackToJs(Integer.parseInt(shareQQFunId), false, jsonObject);
+                callbackToJs(Integer.parseInt(shareQQFunId), false, EUExCallback.F_C_FAILED, jsonObject);
+            } else {
+                jsCallbackAsyn(CB_SHARE_QQ, 0, EUExCallback.F_C_INT,
+                        jsonObject.toString());
             }
         }
     };
@@ -196,10 +201,11 @@ public class EUExQQ extends EUExBase {
         map.put(TAG_RET, String.valueOf(ret));
         map.put(TAG_DATA, data);
         JSONObject json = new JSONObject(map);
-        jsCallbackAsyn(CB_LOGIN, 0, EUExCallback.F_C_JSON,
-                json.toString());
         if (loginFuncId != null) {
-            callbackToJs(Integer.parseInt(loginFuncId), false, json);
+            callbackToJs(Integer.parseInt(loginFuncId), false, EUExCallback.F_C_SUCCESS, data); //4.0直接返回data
+        } else {
+            jsCallbackAsyn(CB_LOGIN, 0, EUExCallback.F_C_JSON,
+                    json.toString());
         }
     }
 
