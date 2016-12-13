@@ -1,0 +1,78 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="css/index.css">
+
+	<script type="text/javascript">
+	var cText = 0;
+	var cJson = 1;
+	var cInt = 2;
+	var appId = "222222";
+      var commonCallback = function(data) {
+        console.log("data:" + JSON.stringify(data));
+        alert("commonCallback:" + JSON.stringify(data));
+      };
+      function login(){
+          uexQQ.login(appId, commonCallback);
+      }
+
+      function shareWebImgTextToQQ(){
+          var json = '{"title":"图文分享标题","summary":"图文分享消息摘要","targetUrl":"http://appcan.cn","imageUrl":"res://aa.jpg","appName":"uexQQ", "cflag":"1"}';
+          uexQQ.shareWebImgTextToQQ(appId, json, commonCallback);
+      }
+
+      function shareLocalImgToQQ(){
+          var json = '{"imageLocalUrl":"res://aa.jpg","appName":"uexQQ"}';
+          uexQQ.shareLocalImgToQQ(appId, json, commonCallback);
+      }
+
+      function shareAudioToQQ(){
+          var json = '{"title":"音乐分享标题","summary":"音乐分享消息摘要","targetUrl":"http://appcan.cn","imageUrl":"http://imgcache.qq.com/qzone/space_item/pre/0/66768.gif","appName":"uexQQ", "audio_url":"http://pan.baidu.com/share/link?shareid=1055030794&uk=2337020227","cflag":"2"}';
+          uexQQ.shareAudioToQQ(appId, json, commonCallback);
+      }
+
+      function shareAppToQQ(){
+          var json = '{"title":"应用分享标题","summary":"应用分享消息摘要","imageUrl":"res://aa.jpg","appName":"uexQQ","cflag":"1"}';
+          uexQQ.shareAppToQQ(appId, json, commonCallback);
+      }
+
+      function shareImgTextToQZone(){
+          var json = '{"title":"空间分享标题","summary":"空间分享消息摘要","targetUrl":"http://appcan.cn","imageUrl":["res://aa.png", "res://aa.jpg", "res://bb.png"]}';
+          uexQQ.shareImgTextToQZone(appId, json, commonCallback);
+      }
+       function getUserInfo(){
+          uexQQ.getUserInfo(appId, commonCallback);
+      }
+
+
+
+</script>
+</head>
+
+<body>
+	<div class="tit">Qzone分享</div>
+    <!-- 登录 -->
+    <div class="conbor">
+        <div class="consj">
+            <input class="btn" type="button" value="QQ登录" onclick="login()">
+            <input class="btn" type="button" value="QQ安装检测" onclick="alert(uexQQ.isQQInstalled());">
+            <div class="tcxx" id="login"></div><br>
+        </div>
+    </div>
+
+	<!-- 图文分享 -->
+	<div class="conbor">
+		<div class="consj">
+            <input class="btn" type="button" value="web图文分享" onclick="shareWebImgTextToQQ()">
+            <input class="btn" type="button" value="纯图分享" onclick="shareLocalImgToQQ()">
+            <input class="btn" type="button" value="音乐分享" onclick="shareAudioToQQ()">
+            <input class="btn" type="button" value="应用分享" onclick="shareAppToQQ()">
+            <input class="btn" type="button" value="图文分享到空间" onclick="shareImgTextToQZone()">
+            <input class="btn" type="button" value="获取用户信息" onclick="getUserInfo()">
+		</div>
+	</div>
+</body>
+</html>
