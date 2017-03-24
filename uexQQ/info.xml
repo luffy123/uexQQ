@@ -1,7 +1,8 @@
-﻿﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <uexplugins>
-    <plugin uexName="uexQQ" version="4.0.0" build = "1">
-        <info>1:4.0插件</info>
+    <plugin uexName="uexQQ" version="4.0.2" build = "2">
+        <info>2:修复未安装qq调用qq登录再返回应用卡死的问题</info>
+        <build>1:4.0插件</build>
         <build>0:QQ登录及分享插件</build>
     </plugin>
 </uexplugins>
