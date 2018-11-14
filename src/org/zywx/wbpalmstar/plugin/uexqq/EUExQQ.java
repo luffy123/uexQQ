@@ -1,12 +1,16 @@
 package org.zywx.wbpalmstar.plugin.uexqq;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.tencent.connect.UserInfo;
 import com.tencent.connect.common.Constants;
@@ -20,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.zywx.wbpalmstar.base.BUtility;
+import org.zywx.wbpalmstar.engine.EBrowserActivity;
 import org.zywx.wbpalmstar.engine.EBrowserView;
 import org.zywx.wbpalmstar.engine.universalex.EUExBase;
 import org.zywx.wbpalmstar.engine.universalex.EUExCallback;
@@ -48,6 +53,8 @@ public class EUExQQ extends EUExBase {
     private static final String TAG_RET = "ret";
     private static final String TAG_DATA = "data";
 
+    private String[] loginParams;
+
     public EUExQQ(Context context, EBrowserView eBrw) {
         super(context, eBrw);
         this.mContext = context;
@@ -61,17 +68,25 @@ public class EUExQQ extends EUExBase {
     }
 
     public void login(String[] params) {
-        if (params.length < 1) {
-            return;
+        loginParams = params;
+        // android6.0以上动态权限申请
+        if (mContext.checkCallingOrSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED){
+            requsetPerssions(Manifest.permission.ACCESS_FINE_LOCATION, "请先申请权限"
+                    + Manifest.permission.ACCESS_FINE_LOCATION, 1);
+        } else {
+            if (params.length < 1) {
+                return;
+            }
+            mAppid = params[0];
+            if (params.length == 2) {
+                loginFuncId = params[1];
+            }
+            Log.i(TAG, "login->mAppid = " + mAppid);
+            initTencent(mAppid);
+            //mTencent.login((Activity )mContext, "all", loginListener);
+            doToStartTransitActivity(QQTransitActivity.UEX_QQ_TRANSIT_ACTIVITY_LOGIN, null);
         }
-        mAppid = params[0];
-        if (params.length == 2) {
-            loginFuncId = params[1];
-        }
-        Log.i(TAG, "login->mAppid = " + mAppid);
-        initTencent(mAppid);
-        //mTencent.login((Activity )mContext, "all", loginListener);
-        doToStartTransitActivity(QQTransitActivity.UEX_QQ_TRANSIT_ACTIVITY_LOGIN, null);
     }
 
     private void initTencent(String appId) {
@@ -531,5 +546,26 @@ public class EUExQQ extends EUExBase {
         intent.putExtra(ConstantUtils.UEX_QQ_TRANSIT_ACTIVITY_KEY_EVENT, event);
         intent.putExtra(ConstantUtils.UEX_QQ_TRANSIT_ACTIVITY_KEY_PARAMS, params);
         startActivity(intent);
+    }
+
+    @Override
+    public void onRequestPermissionResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionResult(requestCode, permissions, grantResults);
+        if (requestCode == 1){
+            if (grantResults[0] != PackageManager.PERMISSION_DENIED){
+                login(loginParams);
+            } else {
+                // 对于 ActivityCompat.shouldShowRequestPermissionRationale
+                // 1：用户拒绝了该权限，没有勾选"不再提醒"，此方法将返回true。
+                // 2：用户拒绝了该权限，有勾选"不再提醒"，此方法将返回 false。
+                // 3：如果用户同意了权限，此方法返回false
+                // 拒绝了权限且勾选了"不再提醒"
+                if (!ActivityCompat.shouldShowRequestPermissionRationale((EBrowserActivity)mContext, permissions[0])) {
+                    Toast.makeText(mContext, "请先设置权限" + permissions[0], Toast.LENGTH_LONG).show();
+                } else {
+                    requsetPerssions(Manifest.permission.ACCESS_FINE_LOCATION, "请先申请权限" + permissions[0], 1);
+                }
+            }
+        }
     }
 }
